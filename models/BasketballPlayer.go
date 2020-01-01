@@ -2,10 +2,11 @@ package models
 
 import (
 	basketBallPlayer "basic-gRPC-proto"
+	"strconv"
 )
 
 type BasePersistenceModel struct {
-	ID	string `gorm:"type:string;primary_key"`
+	ID	uint64 `gorm:"type:int;primary_key"`
 }
 
 type BasketballPlayer struct {
@@ -21,7 +22,7 @@ type BasketballPlayer struct {
 
 func (em *BasketballPlayer) GetgRPCModel() basketBallPlayer.Player {
 	return basketBallPlayer.Player{
-		Id:                   em.ID,
+		Id:                   strconv.FormatUint(em.ID, 10),
 		FirstName:            em.FirstName,
 		LastName:             em.LastName,
 		Age:                  em.Age,
@@ -33,7 +34,12 @@ func (em *BasketballPlayer) GetgRPCModel() basketBallPlayer.Player {
 }
 
 func (em *BasketballPlayer) From(gRPCModel basketBallPlayer.Player) {
-		em.ID = gRPCModel.Id
+		u, e := strconv.ParseUint(gRPCModel.Id, 10, 64)
+		if e != nil {
+			panic("incorrect ID from gRPC")
+		}
+
+		em.ID = u
 		em.FirstName = gRPCModel.FirstName
 		em.LastName = gRPCModel.LastName
 		em.Age = gRPCModel.Age
