@@ -36,9 +36,9 @@ func init() {
 func (*server) GetBasketballPlayer(ctx context.Context, r *basketBallPlayer.PlayerRequest) (*basketBallPlayer.PlayerResponse, error) {
 	id := r.GetId()
 
+	fmt.Println("Checking cache...")
 	playerVal, found := c.Get(id)
 	if found {
-		fmt.Println("Checking cache...")
 		player := playerVal.(*basketBallPlayer.Player)
 		return &basketBallPlayer.PlayerResponse{
 			Result: player,
@@ -88,6 +88,4 @@ func main() {
 	if e := s.Serve(l); e != nil {
 		log.Fatalf("failed to serve %v", e)
 	}
-
-	fmt.Println("Started micro-service successfully!")
 }
