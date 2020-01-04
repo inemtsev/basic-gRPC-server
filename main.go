@@ -56,6 +56,8 @@ func (*server) GetBasketballPlayer(ctx context.Context, r *basketBallPlayer.Play
 			return nil, fmt.Errorf("could not find player with id: %v", id)
 		} else {
 			gRPCResult := p.GetgRPCModel()
+			c.Set(id, &gRPCResult, cache.DefaultExpiration)
+			
 			return &basketBallPlayer.PlayerResponse{
 				Result:	&gRPCResult,
 			}, nil
